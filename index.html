@@ -196,7 +196,7 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
 </head>
 <body>
 
-<div class="ribbon">Sito dimostrativo · salone di fantasia · <a href="#per-te">Vuoi un sito così per la tua attività?</a></div>
+<div class="ribbon">Sito dimostrativo di Minimind Studio · salone di fantasia · <a href="#per-te">Vuoi un sito così per la tua attività?</a></div>
 
 <nav class="top" aria-label="Menu principale">
   <div class="wrap">
@@ -338,9 +338,9 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
 <section class="block pitch" id="per-te">
   <div class="wrap">
     <div>
-      <p class="eyebrow">Questa è una demo</p>
-      <h2>Un sito così, <em>con il nome del tuo salone.</em></h2>
-      <p style="margin-top:20px;color:#b8bcbf;max-width:46ch">Maison Ardesia non esiste: è un esempio di quello che posso realizzare per la tua attività, con i tuoi servizi, i tuoi prezzi, le tue foto e i tuoi orari.</p>
+      <p class="eyebrow">Demo realizzata da Minimind Studio</p>
+      <h2>Un sito così, <em>con il nome della tua attività.</em></h2>
+      <p style="margin-top:20px;color:#b8bcbf;max-width:46ch">Maison Ardesia non esiste: è un esempio dei siti su misura che Minimind Studio realizza per attività di ogni tipo: con i tuoi servizi, i tuoi prezzi, le tue foto e i tuoi orari.</p>
       <div class="contact">
         <button class="btn btn-gold" type="button" data-open-chat>Prova l'assistente</button>
         <span class="addr" id="contactAddr"></span>
@@ -358,7 +358,7 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
 
 <footer>
   <div class="wrap">
-    <span>Maison Ardesia è un salone di fantasia creato per mostrare un sito con prenotazioni e assistente.</span>
+    <span>Maison Ardesia è un salone di fantasia. Sito dimostrativo di Minimind Studio · studiominimind@gmail.com</span>
     <span>Privacy · Cookie</span>
   </div>
 </footer>
@@ -386,7 +386,7 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
 
 <script>
 /* ===== dati del salone (si cambiano per ogni cliente) ===== */
-const CONTATTO = "Scrivimi: la-tua-mail@esempio.it"; // <- da sostituire con la nuova mail
+const CONTATTO = "studiominimind@gmail.com";
 const SERVIZI = {
   "Capelli": [
     {n:"Piega", d:45, p:28, t:"Lavaggio, trattamento leggero e piega mossa o liscia."},
@@ -415,7 +415,7 @@ const MESI = ["gennaio","febbraio","marzo","aprile","maggio","giugno","luglio","
 const GIORNI = ["domenica","lunedì","martedì","mercoledì","giovedì","venerdì","sabato"];
 const ALL = Object.values(SERVIZI).flat().filter(s=>s.p>0 || s.n==="Consulenza colore");
 
-document.getElementById("contactAddr").textContent = CONTATTO;
+document.getElementById("contactAddr").innerHTML = 'Scrivi a Minimind Studio: <a href="mailto:'+CONTATTO+'" style="color:var(--champagne)">'+CONTATTO+'</a>';
 
 /* ===== disponibilità simulate, stabili ===== */
 function seeded(n){ let x = Math.sin(n*9301+49297)*233280; return x-Math.floor(x); }
