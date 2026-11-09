@@ -3,7 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Maison Ardesia – demo sito salone</title>
+<title>Demo sito con prenotazione online – Minimind Studio</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#2c343c">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -218,18 +220,22 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
 .compose input{border-radius:999px;padding:11px 16px}
 .compose button{width:44px;height:44px;flex:none;border-radius:50%;border:0;background:var(--champagne);color:#1b1a17;font-size:18px}
 @media (max-width:520px){.chat{right:16px;bottom:92px}.fab{right:16px;bottom:16px}.fab .bubble{display:none}}
+/* recensioni reali da Google: niente card inventate */
+.rgoogle{background:#fff;border:1px solid var(--line);border-radius:20px;padding:28px;display:grid;gap:14px;align-self:center}
+.rgoogle p{font-family:var(--display);font-size:24px;line-height:1.3}
+.rgoogle small{color:var(--muted);font-size:13px}
+.hidden{display:none!important}
 </style>
-</head>
 <body>
 
-<div class="ribbon">Sito dimostrativo di Minimind Studio · salone di fantasia · <a href="#per-te">Vuoi un sito così per la tua attività?</a></div>
+<div class="ribbon" id="ribbon"></div>
 
 <nav class="top" aria-label="Menu principale">
   <div class="wrap">
-    <a class="logo" href="#top">Maison Ardesia <small>Milano</small></a>
+    <a class="logo" href="#top"><span id="logoName"></span> <small id="logoCity"></small></a>
     <div class="links">
       <a href="#servizi">Servizi e prezzi</a>
-      <a href="#colori">Colore</a>
+      <a href="#colori" id="navColori">Colore</a>
       <a href="#recensioni">Recensioni</a>
       <a href="#prenota">Prenota</a>
       <a href="#dove">Dove siamo</a>
@@ -242,18 +248,18 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
   <canvas id="silk" aria-hidden="true"></canvas>
   <div class="wrap">
     <div>
-      <p class="eyebrow">Hair &amp; beauty atelier · Porta Venezia</p>
-      <h1>Capelli che <em>ti somigliano</em>, prenotati in un minuto.</h1>
-      <p class="lead">Taglio, colore su misura e trattamenti. Scegli giorno e ora dal calendario, oppure chiedi ad Aria, l'assistente del salone: risponde anche alle 23.</p>
+      <p class="eyebrow" id="heroEyebrow"></p>
+      <h1 id="heroTitle"></h1>
+      <p class="lead" id="heroText"></p>
       <div class="cta">
         <a class="btn btn-gold" href="#prenota">Scegli giorno e ora</a>
-        <button class="btn btn-ghost" type="button" data-open-chat>Chiedi ad Aria</button>
+        <button class="btn btn-ghost" type="button" data-open-chat id="heroChatBtn"></button>
       </div>
     </div>
     <aside class="hero-card" aria-label="Prossime disponibilità">
       <div class="k">Primo posto libero</div>
       <div class="next" id="nextFree">—</div>
-      <div class="sub">Piega, taglio o colore</div>
+      <div class="sub" id="nextSub"></div>
       <ul id="nextList"></ul>
     </aside>
   </div>
@@ -264,9 +270,9 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
     <div class="head">
       <div>
         <p class="eyebrow">Listino</p>
-        <h2>Servizi e prezzi, senza sorprese.</h2>
+        <h2 id="srvTitle"></h2>
       </div>
-      <p>Ogni servizio indica durata e prezzo di partenza. Il prezzo finale dipende da lunghezza e quantità di prodotto: te lo confermiamo prima di iniziare.</p>
+      <p id="srvText"></p>
     </div>
     <div class="tabs" role="tablist" id="tabs"></div>
     <div class="menu" id="menu"></div>
@@ -280,7 +286,7 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
         <p class="eyebrow">Cartella colori</p>
         <h2>Il colore si studia, non si sceglie a caso.</h2>
       </div>
-      <p>Prima di ogni colorazione facciamo una consulenza gratuita di 15 minuti: tono naturale, altezza di tono e riflesso. Qui alcune delle nostre nuance più richieste: passaci sopra il mouse o il dito.</p>
+      <p id="colText"></p>
     </div>
     <div class="swatches" id="swatches"></div>
   </div>
@@ -291,25 +297,13 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
     <div class="head">
       <div>
         <p class="eyebrow">Recensioni</p>
-        <h2>Chi esce dal salone, torna.</h2>
+        <h2 id="revTitle"></h2>
       </div>
-      <p>Le opinioni delle clienti, raccolte dopo ogni appuntamento. Sul sito di un salone vero qui compaiono le sue recensioni Google, aggiornate da sole.</p>
+      <p id="revText"></p>
     </div>
     <div class="reviews">
-      <div class="score">
-        <div class="big">4,9</div>
-        <div class="stars" aria-label="5 stelle su 5">★★★★★</div>
-        <div class="cnt">media su 312 recensioni</div>
-        <div class="bars" aria-hidden="true">
-          <div class="bar"><span>5</span><i><b style="width:91%"></b></i><span>284</span></div>
-          <div class="bar"><span>4</span><i><b style="width:7%"></b></i><span>21</span></div>
-          <div class="bar"><span>3</span><i><b style="width:2%"></b></i><span>5</span></div>
-          <div class="bar"><span>2</span><i><b style="width:.6%"></b></i><span>2</span></div>
-          <div class="bar"><span>1</span><i><b style="width:0%"></b></i><span>0</span></div>
-        </div>
-        <span class="tag">Recensioni di esempio · salone di fantasia</span>
-      </div>
-      <div class="rgrid" id="rgrid"></div>
+      <div class="score" id="score"></div>
+      <div id="revRight"></div>
     </div>
     <div class="rnote">
       <span><b>Più recensioni, in automatico:</b> il giorno dopo l'appuntamento la cliente riceve una mail che la invita a lasciare una recensione su Google.</span>
@@ -360,7 +354,7 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
           <h3>Ci vediamo presto!</h3>
           <p id="confirmText"></p>
           <div class="mail" aria-label="Anteprima della mail di conferma">
-            <div class="bar">Anteprima mail · Da: Maison Ardesia</div>
+            <div class="bar" id="mailFrom"></div>
             <div class="body" id="mailBody"></div>
           </div>
           <button class="btn btn-ghost" type="button" id="againBtn" style="margin-top:18px">Nuova prenotazione</button>
@@ -374,41 +368,33 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
   <div class="wrap info">
     <div>
       <h3>Orari</h3>
-      <ul class="hours">
-        <li class="off"><span>Lunedì</span><span>chiuso</span></li>
-        <li><span>Martedì</span><span>9:30 – 19:30</span></li>
-        <li><span>Mercoledì</span><span>9:30 – 19:30</span></li>
-        <li><span>Giovedì</span><span>10:00 – 21:00</span></li>
-        <li><span>Venerdì</span><span>9:30 – 19:30</span></li>
-        <li><span>Sabato</span><span>9:00 – 18:00</span></li>
-        <li class="off"><span>Domenica</span><span>chiuso</span></li>
-      </ul>
+      <ul class="hours" id="hoursList"></ul>
     </div>
     <div>
       <h3>Dove siamo</h3>
-      <p>Zona Porta Venezia, Milano.<br>A 4 minuti a piedi dalla metro M1.</p>
-      <p style="margin-top:14px;color:var(--muted);font-size:14px">Il giovedì apertura serale fino alle 21, pensata per chi lavora.</p>
-      <button class="btn btn-ghost" type="button" data-open-chat style="margin-top:18px">Domande? Scrivi ad Aria</button>
+      <p id="addrText"></p>
+      <p style="margin-top:14px;color:var(--muted);font-size:14px" id="orariNota"></p>
+      <button class="btn btn-ghost" type="button" data-open-chat style="margin-top:18px" id="doveChatBtn"></button>
     </div>
-    <div class="map" aria-hidden="true"><canvas id="mapc"></canvas><div class="pin">Maison Ardesia</div></div>
+    <div class="map" aria-hidden="true"><canvas id="mapc"></canvas><div class="pin" id="pin"></div></div>
   </div>
 </section>
 
 <section class="block pitch" id="per-te">
   <div class="wrap">
     <div>
-      <p class="eyebrow">Demo realizzata da Minimind Studio</p>
-      <h2>Un sito così, <em>con il nome della tua attività.</em></h2>
-      <p style="margin-top:20px;color:#b8bcbf;max-width:46ch">Maison Ardesia non esiste: è un esempio dei siti su misura che Minimind Studio realizza per attività di ogni tipo: con i tuoi servizi, i tuoi prezzi, le tue foto e i tuoi orari.</p>
+      <p class="eyebrow" id="pitchEyebrow"></p>
+      <h2 id="pitchTitle"></h2>
+      <p style="margin-top:20px;color:#b8bcbf;max-width:46ch" id="pitchText"></p>
       <div class="contact">
         <button class="btn btn-gold" type="button" data-open-chat>Prova l'assistente</button>
         <span class="addr" id="contactAddr"></span>
       </div>
     </div>
     <ul>
-      <li><span class="n">01</span><div><b>Prenotazioni 24 ore su 24</b><span>Le clienti prenotano anche quando il salone è chiuso, senza telefonate.</span></div></li>
+      <li><span class="n">01</span><div><b>Prenotazioni 24 ore su 24</b><span>Le clienti prenotano anche quando sei chiuso, senza telefonate.</span></div></li>
       <li><span class="n">02</span><div><b>Nessuna commissione</b><span>Le prenotazioni arrivano direttamente a te, non a un portale che trattiene una percentuale.</span></div></li>
-      <li><span class="n">03</span><div><b>Assistente che risponde per te</b><span>Prezzi, orari, dove siete, disponibilità: le domande di tutti i giorni hanno già una risposta.</span></div></li>
+      <li><span class="n">03</span><div><b>Assistente che risponde per te</b><span>Prezzi, orari, dove sei, disponibilità: le domande di tutti i giorni hanno già una risposta.</span></div></li>
       <li><span class="n">04</span><div><b>Conferme e promemoria via mail</b><span>Meno appuntamenti dimenticati.</span></div></li>
       <li><span class="n">05</span><div><b>Più recensioni su Google</b><span>Dopo ogni appuntamento la cliente riceve l'invito a lasciare una recensione, e sul sito compaiono le tue recensioni vere.</span></div></li>
       <li><span class="n">06</span><div><b>Tutto tuo</b><span>Calendario e dati delle clienti restano nel tuo account Google. Funziona su telefono e computer.</span></div></li>
@@ -418,22 +404,22 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
 
 <footer>
   <div class="wrap">
-    <span>Maison Ardesia è un salone di fantasia. Sito dimostrativo di Minimind Studio · studiominimind@gmail.com</span>
+    <span id="footText"></span>
     <span>Privacy · Cookie</span>
   </div>
 </footer>
 
 <!-- assistente -->
 <div class="fab">
-  <div class="bubble" id="hint">Ciao! Sono Aria. Vuoi vedere i posti liberi di questa settimana?</div>
+  <div class="bubble" id="hint"></div>
   <button class="open" type="button" data-open-chat aria-label="Apri la chat con l'assistente">
     <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12Z"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01"/></svg>
   </button>
 </div>
-<div class="chat closed" id="chat" role="dialog" aria-label="Chat con Aria, assistente del salone">
+<div class="chat closed" id="chat" role="dialog" aria-label="Chat con l'assistente">
   <header>
-    <div class="av">A</div>
-    <div><b>Aria</b><small>Assistente di Maison Ardesia · online</small></div>
+    <div class="av" id="chatAv"></div>
+    <div><b id="chatName"></b><small id="chatSub"></small></div>
     <button type="button" id="closeChat" aria-label="Chiudi la chat">×</button>
   </header>
   <div class="log" id="log" aria-live="polite"></div>
@@ -445,53 +431,232 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
 </div>
 
 <script>
-/* ===== dati del salone (si cambiano per ogni cliente) ===== */
-const CONTATTO = "studiominimind@gmail.com";
-const SERVIZI = {
-  "Capelli": [
-    {n:"Piega", d:45, p:28, t:"Lavaggio, trattamento leggero e piega mossa o liscia."},
-    {n:"Taglio e piega", d:60, p:48, t:"Consulenza sulla forma del viso, taglio e styling."},
-    {n:"Taglio uomo", d:30, p:26, t:"Forbice e macchinetta, lavaggio incluso."},
-    {n:"Raccolto da cerimonia", d:75, p:70, t:"Prova consigliata una settimana prima."}
-  ],
-  "Colore": [
-    {n:"Colore radici", d:90, p:55, t:"Copertura bianchi e ritocco ricrescita."},
-    {n:"Balayage", d:180, p:140, t:"Schiariture a mano libera, tonalizzante incluso."},
-    {n:"Gloss tonalizzante", d:45, p:35, t:"Ravviva i riflessi e chiude le cuticole."},
-    {n:"Consulenza colore", d:15, p:0, t:"Gratuita, prima di ogni colorazione."}
-  ],
-  "Trattamenti": [
-    {n:"Ricostruzione alla cheratina", d:60, p:60, t:"Per capelli trattati e sfibrati."},
-    {n:"Rituale cute", d:40, p:38, t:"Scrub, massaggio e maschera purificante."}
-  ],
-  "Estetica": [
-    {n:"Manicure con semipermanente", d:60, p:35, t:"Durata media tre settimane."},
-    {n:"Laminazione ciglia", d:60, p:55, t:"Effetto curvato per 6–8 settimane."},
-    {n:"Pulizia viso", d:60, p:50, t:"Detersione profonda e maschera."}
-  ]
+/* ================================================================
+   CONFIGURAZIONE DELLA DEMO
+   È l'unica parte da cambiare per ogni cliente. Tutto il resto del
+   sito si costruisce da qui.
+   ================================================================ */
+// === CONFIG INIZIO ===
+const CONFIG = {
+  // "salone" | "barbiere" | "estetica": cambia testi di default e sezioni
+  tipo: "salone",
+  // true = attività inventata (demo generale). false = attività reale (demo personalizzata):
+  // niente recensioni inventate, avviso "anteprima non ufficiale" in alto.
+  fantasia: true,
+  nome: "Maison Ardesia",
+  citta: "Milano",
+  // tema di colori: "ardesia" | "bottega" | "salvia" | "cipria"
+  tema: "ardesia",
+  // facoltativo: sovrascrive singoli colori del tema, es. { accento:"#b8945a" }
+  colori: {},
+
+  hero: {
+    occhiello: "Hair & beauty atelier · Porta Venezia",
+    titolo: "Capelli che <em>ti somigliano</em>, prenotati in un minuto.",
+    testo: "Taglio, colore su misura e trattamenti. Scegli giorno e ora dal calendario, oppure chiedi ad Aria, l'assistente del salone: risponde anche alle 23."
+  },
+
+  indirizzo: "Zona Porta Venezia, Milano.",
+  comeArrivare: "A 4 minuti a piedi dalla metro M1.",
+  notaOrari: "Il giovedì apertura serale fino alle 21, pensata per chi lavora.",
+
+  // orari: "chiuso" oppure fasce separate da virgola, es. "9-13, 15-19:30"
+  orari: {
+    lunedi: "chiuso",
+    martedi: "9:30-19:30",
+    mercoledi: "9:30-19:30",
+    giovedi: "10-21",
+    venerdi: "9:30-19:30",
+    sabato: "9-18",
+    domenica: "chiuso"
+  },
+
+  // servizi per categoria. n = nome, d = durata in minuti, p = prezzo in euro (0 = gratis), t = descrizione
+  prezziDa: true, // true = mostra "da € 28", false = "€ 28"
+  servizi: {
+    "Capelli": [
+      {n:"Piega", d:45, p:28, t:"Lavaggio, trattamento leggero e piega mossa o liscia."},
+      {n:"Taglio e piega", d:60, p:48, t:"Consulenza sulla forma del viso, taglio e styling."},
+      {n:"Taglio uomo", d:30, p:26, t:"Forbice e macchinetta, lavaggio incluso."},
+      {n:"Raccolto da cerimonia", d:75, p:70, t:"Prova consigliata una settimana prima."}
+    ],
+    "Colore": [
+      {n:"Colore radici", d:90, p:55, t:"Copertura bianchi e ritocco ricrescita."},
+      {n:"Balayage", d:180, p:140, t:"Schiariture a mano libera, tonalizzante incluso."},
+      {n:"Gloss tonalizzante", d:45, p:35, t:"Ravviva i riflessi e chiude le cuticole."},
+      {n:"Consulenza colore", d:15, p:0, t:"Gratuita, prima di ogni colorazione."}
+    ],
+    "Trattamenti": [
+      {n:"Ricostruzione alla cheratina", d:60, p:60, t:"Per capelli trattati e sfibrati."},
+      {n:"Rituale cute", d:40, p:38, t:"Scrub, massaggio e maschera purificante."}
+    ],
+    "Estetica": [
+      {n:"Manicure con semipermanente", d:60, p:35, t:"Durata media tre settimane."},
+      {n:"Laminazione ciglia", d:60, p:55, t:"Effetto curvato per 6–8 settimane."},
+      {n:"Pulizia viso", d:60, p:50, t:"Detersione profonda e maschera."}
+    ]
+  },
+  // servizi suggeriti nella chat e nel calendario (il primo è quello preselezionato)
+  inEvidenza: ["Taglio e piega","Piega","Colore radici","Balayage","Manicure con semipermanente"],
+
+  // cartella colori con le ciocche animate (solo per chi fa colore)
+  cartellaColori: true,
+
+  recensioni: {
+    voto: 4.9,
+    numero: 312,
+    link: "",               // link alla scheda Google (attività reali)
+    aggiornato: "",         // es. "novembre 2026" (attività reali)
+    distribuzione: [284,21,5,2,0], // solo demo di fantasia: 5,4,3,2,1 stelle
+    esempi: [               // solo demo di fantasia: mai per attività reali
+      {n:"Chiara M.", q:"Finalmente un balayage che sembra naturale anche dopo un mese. Mi hanno spiegato ogni passaggio prima di iniziare.", s:"Balayage", t:"2 settimane fa", c:"#e6cf9f"},
+      {n:"Davide R.", q:"Prenotato alle undici di sera dal telefono, confermato in un minuto. Taglio preciso e veloce.", s:"Taglio uomo", t:"1 mese fa", c:"#c9a5a0"},
+      {n:"Sara L.", q:"Ambiente calmo, nessuna attesa. La consulenza colore gratuita mi ha evitato l'ennesimo errore.", s:"Consulenza colore", t:"1 mese fa", c:"#b9c4c9"},
+      {n:"Elena B.", q:"Semipermanente perfetto per tre settimane piene. Il promemoria via mail il giorno prima è comodissimo.", s:"Manicure", t:"2 mesi fa", c:"#d9c7b0"}
+    ]
+  },
+
+  assistente: {
+    nome: "Aria",
+    parcheggio: "In zona ci sono strisce blu e un parcheggio coperto a 300 metri.",
+    annullamento: "Puoi spostare o annullare gratis fino a 24 ore prima: rispondi alla mail di conferma oppure scrivimi qui data e ora del tuo appuntamento.",
+    // parole che la chat collega a un servizio, se la cliente non scrive il nome esatto
+    sinonimi: { "capell":"Taglio e piega", "unghi":"Manicure con semipermanente", "mani":"Manicure con semipermanente", "biond":"Balayage", "schiar":"Balayage", "ciglia":"Laminazione ciglia", "viso":"Pulizia viso" }
+  },
+
+  contatto: "studiominimind@gmail.com"
 };
-const ORARI = {2:[9.5,19.5],3:[9.5,19.5],4:[10,21],5:[9.5,19.5],6:[9,18]}; // 0=domenica
+// === CONFIG FINE ===
+
+/* ================================================================
+   Da qui in giù non serve cambiare niente.
+   ================================================================ */
+const TEMI = {
+  ardesia: {ink:"#1f252b", slate:"#2c343c", paper:"#f2f1ee", mist:"#e3e4e1", accento:"#b8945a", rose:"#c9a5a0", muted:"#6b7279"},
+  bottega: {ink:"#1c1916", slate:"#2b2520", paper:"#f1ede6", mist:"#e3ddd2", accento:"#c08a3e", rose:"#a4513f", muted:"#6f665d"},
+  salvia:  {ink:"#1f2b26", slate:"#2d3d36", paper:"#f2f4ef", mist:"#e0e6dc", accento:"#b48a68", rose:"#d4ad9f", muted:"#66726b"},
+  cipria:  {ink:"#2a2124", slate:"#3b2d33", paper:"#f7f2f0", mist:"#ede0dd", accento:"#c27d85", rose:"#e2b6b1", muted:"#776a6d"}
+};
+const TESTI = {
+  salone:   {srvTitle:"Servizi e prezzi, senza sorprese.", srvText:"Ogni servizio indica durata e prezzo di partenza. Il prezzo finale dipende da lunghezza e quantità di prodotto: te lo confermiamo prima di iniziare.", nextSub:"Piega, taglio o colore", revTitle:"Chi esce dal salone, torna.", luogo:"il salone"},
+  barbiere: {srvTitle:"Taglio, barba e niente attese.", srvText:"Ogni servizio indica durata e prezzo. Prenoti l'orario e quando arrivi la poltrona è pronta.", nextSub:"Taglio, barba o combo", revTitle:"Chi si siede una volta, torna.", luogo:"la bottega"},
+  estetica: {srvTitle:"Trattamenti e prezzi, chiari.", srvText:"Ogni trattamento indica durata e prezzo di partenza. Se hai dubbi su quale scegliere, chiedi all'assistente.", nextSub:"Il primo trattamento disponibile", revTitle:"Le clienti tornano. Un motivo c'è.", luogo:"il centro"}
+};
+const T = TESTI[CONFIG.tipo] || TESTI.salone;
+const A = CONFIG.assistente;
+const R = CONFIG.recensioni;
+const SERVIZI = CONFIG.servizi;
 const MESI = ["gennaio","febbraio","marzo","aprile","maggio","giugno","luglio","agosto","settembre","ottobre","novembre","dicembre"];
 const GIORNI = ["domenica","lunedì","martedì","mercoledì","giovedì","venerdì","sabato"];
-const ALL = Object.values(SERVIZI).flat().filter(s=>s.p>0 || s.n==="Consulenza colore");
+const CHIAVI_GIORNI = ["domenica","lunedi","martedi","mercoledi","giovedi","venerdi","sabato"];
+const ALL = Object.values(SERVIZI).flat();
+const EVIDENZA = (CONFIG.inEvidenza && CONFIG.inEvidenza.length ? CONFIG.inEvidenza : ALL.map(s=>s.n)).filter(n=>ALL.some(s=>s.n===n)).slice(0,5);
+const $ = id => document.getElementById(id);
+function esc(t){ return String(t).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+function prezzo(s){ return s.p ? (CONFIG.prezziDa ? "da € " : "€ ")+s.p : "gratis"; }
+function virgola(n){ return String(n).replace(".",","); }
 
-document.getElementById("contactAddr").innerHTML = 'Scrivi a Minimind Studio: <a href="mailto:'+CONTATTO+'" style="color:var(--champagne)">'+CONTATTO+'</a>';
+/* ---------- colori ---------- */
+const TEMA = Object.assign({}, TEMI[CONFIG.tema] || TEMI.ardesia, CONFIG.colori || {});
+(function(){
+  const r=document.documentElement.style;
+  r.setProperty("--ink",TEMA.ink); r.setProperty("--slate",TEMA.slate); r.setProperty("--paper",TEMA.paper);
+  r.setProperty("--mist",TEMA.mist); r.setProperty("--champagne",TEMA.accento); r.setProperty("--rose",TEMA.rose); r.setProperty("--muted",TEMA.muted);
+  const m=document.querySelector('meta[name="theme-color"]'); if(m) m.content=TEMA.slate;
+})();
+function rgba(hex,a){ const h=hex.replace("#",""); const n=parseInt(h.length===3?h.split("").map(x=>x+x).join(""):h,16); return "rgba("+(n>>16&255)+","+(n>>8&255)+","+(n&255)+","+a+")"; }
 
-/* ===== disponibilità simulate, stabili ===== */
+/* ---------- orari ---------- */
+function ore(t){ const [h,m]=t.trim().replace(".",":").split(":"); return +h + (m? +m/60 : 0); }
+function fmtH(h){ const hh=Math.floor(h), mm=Math.round((h-hh)*60); return hh+":"+String(mm).padStart(2,"0"); }
+const ORARI = {};
+CHIAVI_GIORNI.forEach((k,i)=>{
+  const v=(CONFIG.orari[k]||"chiuso").trim().toLowerCase();
+  ORARI[i] = v==="chiuso" ? [] : v.split(",").map(f=>f.split("-").map(ore));
+});
+function orariTesto(i){ return ORARI[i].length ? ORARI[i].map(f=>fmtH(f[0])+" – "+fmtH(f[1])).join(" · ") : "chiuso"; }
+
+/* ---------- testi della pagina ---------- */
+(function(){
+  document.title = CONFIG.fantasia ? CONFIG.nome+" – demo sito con prenotazione online" : CONFIG.nome+" – anteprima del sito";
+  $("ribbon").innerHTML = CONFIG.fantasia
+    ? 'Sito dimostrativo di Minimind Studio · attività di fantasia · <a href="#per-te">Vuoi un sito così per la tua attività?</a>'
+    : 'Anteprima non ufficiale preparata da Minimind Studio per '+esc(CONFIG.nome)+' · orari e prenotazioni sono simulati · <a href="#per-te">Cos\'è questa pagina?</a>';
+  $("logoName").textContent = CONFIG.nome; $("logoCity").textContent = CONFIG.citta;
+  $("heroEyebrow").textContent = CONFIG.hero.occhiello;
+  $("heroTitle").innerHTML = CONFIG.hero.titolo;
+  $("heroText").textContent = CONFIG.hero.testo;
+  $("heroChatBtn").textContent = "Chiedi a "+A.nome;
+  $("doveChatBtn").textContent = "Domande? Scrivi a "+A.nome;
+  $("nextSub").textContent = T.nextSub;
+  $("srvTitle").textContent = T.srvTitle; $("srvText").textContent = T.srvText;
+  $("colText").textContent = "Prima di ogni colorazione facciamo una consulenza gratuita di 15 minuti: tono naturale, altezza di tono e riflesso. Qui alcune delle nuance più richieste: passaci sopra il mouse o il dito.";
+  if(!CONFIG.cartellaColori){ $("colori").classList.add("hidden"); $("navColori").classList.add("hidden"); }
+  $("addrText").innerHTML = esc(CONFIG.indirizzo)+(CONFIG.comeArrivare?"<br>"+esc(CONFIG.comeArrivare):"");
+  $("orariNota").textContent = CONFIG.notaOrari || "";
+  $("pin").textContent = CONFIG.nome;
+  const hl=$("hoursList");
+  [1,2,3,4,5,6,0].forEach(i=>{ const li=document.createElement("li"); if(!ORARI[i].length) li.className="off"; li.innerHTML="<span>"+GIORNI[i][0].toUpperCase()+GIORNI[i].slice(1)+"</span><span>"+orariTesto(i)+"</span>"; hl.appendChild(li); });
+  if(CONFIG.fantasia){
+    $("pitchEyebrow").textContent = "Demo realizzata da Minimind Studio";
+    $("pitchTitle").innerHTML = "Un sito così, <em>con il nome della tua attività.</em>";
+    $("pitchText").textContent = CONFIG.nome+" non esiste: è un esempio dei siti su misura che Minimind Studio realizza per attività di ogni tipo, con i tuoi servizi, i tuoi prezzi, le tue foto e i tuoi orari.";
+    $("footText").textContent = CONFIG.nome+" è un'attività di fantasia. Sito dimostrativo di Minimind Studio · "+CONFIG.contatto;
+  } else {
+    $("pitchEyebrow").textContent = "Anteprima preparata da Minimind Studio";
+    $("pitchTitle").innerHTML = "Il sito di "+esc(CONFIG.nome)+", <em>pronto da pubblicare.</em>";
+    $("pitchText").textContent = "Questa pagina non è il sito ufficiale di "+CONFIG.nome+": è una proposta costruita con i servizi e i prezzi pubblicati dall'attività. Colori, testi e foto si cambiano come preferisci. Calendario e prenotazioni qui sono simulati.";
+    $("footText").textContent = "Anteprima non ufficiale per "+CONFIG.nome+", preparata da Minimind Studio · "+CONFIG.contatto;
+  }
+  $("contactAddr").innerHTML = 'Scrivi a Minimind Studio: <a href="mailto:'+CONFIG.contatto+'" style="color:var(--champagne)">'+CONFIG.contatto+'</a>';
+  $("mailFrom").textContent = "Anteprima mail · Da: "+CONFIG.nome;
+  $("chatAv").textContent = A.nome[0]; $("chatName").textContent = A.nome;
+  $("chatSub").textContent = "Assistente di "+CONFIG.nome+" · online";
+  $("chat").setAttribute("aria-label","Chat con "+A.nome+", assistente di "+CONFIG.nome);
+  $("hint").textContent = "Ciao! Sono "+A.nome+". Vuoi vedere i posti liberi di questa settimana?";
+})();
+
+/* ---------- recensioni ---------- */
+(function(){
+  const pieno=Math.round(R.voto), stelle="★".repeat(pieno)+"☆".repeat(5-pieno);
+  let h='<div class="big">'+virgola(R.voto)+'</div><div class="stars" aria-label="'+virgola(R.voto)+' stelle su 5">'+stelle+'</div>';
+  if(CONFIG.fantasia){
+    $("revTitle").textContent = T.revTitle;
+    $("revText").textContent = "Le opinioni delle clienti, raccolte dopo ogni appuntamento. Sul sito di un'attività vera qui compaiono le sue recensioni Google, aggiornate da sole.";
+    h+='<div class="cnt">media su '+R.numero+' recensioni</div>';
+    if(R.distribuzione){ const tot=R.distribuzione.reduce((a,b)=>a+b,0)||1; h+='<div class="bars" aria-hidden="true">'+R.distribuzione.map((v,i)=>'<div class="bar"><span>'+(5-i)+'</span><i><b style="width:'+(v/tot*100).toFixed(1)+'%"></b></i><span>'+v+'</span></div>').join("")+'</div>'; }
+    h+='<span class="tag">Recensioni di esempio · attività di fantasia</span>';
+    const g=document.createElement("div"); g.className="rgrid";
+    (R.esempi||[]).forEach(r=>{
+      const ini=r.n.split(" ").map(x=>x[0]).join("");
+      g.insertAdjacentHTML("beforeend",'<article class="rcard"><div class="rtop"><span class="ini" style="background:'+r.c+'">'+ini+'</span><div><b>'+esc(r.n)+'</b><small>'+esc(r.t)+'</small></div></div><div class="st" aria-label="5 stelle">★★★★★</div><p>'+esc(r.q)+'</p><div class="svc"><span>'+esc(r.s)+'</span><span>Esempio</span></div></article>');
+    });
+    $("revRight").appendChild(g);
+  } else {
+    $("revTitle").textContent = "Cosa dicono le clienti su Google";
+    $("revText").textContent = "Voto e numero di recensioni sono quelli reali della scheda Google di "+CONFIG.nome+".";
+    h+='<div class="cnt">su '+R.numero+' recensioni Google</div>';
+    if(R.aggiornato) h+='<span class="tag">Dato reale da Google · '+esc(R.aggiornato)+'</span>';
+    $("revRight").innerHTML='<div class="rgoogle"><p>Sul sito pubblicato qui compaiono le ultime recensioni Google di '+esc(CONFIG.nome)+', aggiornate da sole.</p><small>Nell\'anteprima non mostro recensioni: non ne invento per un\'attività reale.</small>'+(R.link?'<a class="btn btn-dark" href="'+esc(R.link)+'" target="_blank" rel="noopener" style="justify-self:start">Leggi le recensioni su Google</a>':'')+'</div>';
+  }
+  $("score").innerHTML=h;
+})();
+
+/* ---------- disponibilità simulate, stabili ---------- */
 function seeded(n){ let x = Math.sin(n*9301+49297)*233280; return x-Math.floor(x); }
 const today = new Date(); today.setHours(0,0,0,0);
 function key(d){ return d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate(); }
-function fmtH(h){ const hh=Math.floor(h), mm=Math.round((h-hh)*60); return hh+":"+String(mm).padStart(2,"0"); }
 function slotsFor(date, dur){
-  const o = ORARI[date.getDay()]; if(!o) return [];
-  if(date < today) return [];
+  if(!date || date < today) return [];
   const out=[]; const k=key(date);
-  for(let h=o[0]; h+dur/60<=o[1]+0.001; h+=0.5){
-    const busy = seeded(k + h*7) < 0.42;
-    let past = false;
-    if(date.getTime()===today.getTime()){ const now=new Date(); past = h <= now.getHours()+now.getMinutes()/60+1; }
-    out.push({h, label:fmtH(h), free:!busy && !past});
-  }
+  ORARI[date.getDay()].forEach(f=>{
+    for(let h=f[0]; h+dur/60<=f[1]+0.001; h+=0.5){
+      const busy = seeded(k + h*7) < 0.42;
+      let past = false;
+      if(date.getTime()===today.getTime()){ const now=new Date(); past = h <= now.getHours()+now.getMinutes()/60+1; }
+      out.push({h, label:fmtH(h), free:!busy && !past});
+    }
+  });
   return out;
 }
 function hasFree(date,dur){ return slotsFor(date,dur).some(s=>s.free); }
@@ -512,32 +677,34 @@ function dayName(d){
 
 /* hero */
 (function(){
-  const n = nextFree(60,4);
-  if(n.length){ document.getElementById("nextFree").textContent = dayName(n[0].date)+", "+n[0].slot.label; }
-  const ul=document.getElementById("nextList");
+  const base = ALL.find(s=>s.n===EVIDENZA[0]) || ALL[0];
+  const n = nextFree(base.d,4);
+  if(n.length){ $("nextFree").textContent = dayName(n[0].date)+", "+n[0].slot.label; }
+  const ul=$("nextList");
   n.slice(1).forEach(x=>{ const li=document.createElement("li"); li.innerHTML="<span>"+dayName(x.date)+"</span><span>"+x.all.slice(0,3).map(s=>s.label).join(" · ")+"</span>"; ul.appendChild(li); });
 })();
 
 /* servizi */
-const tabs=document.getElementById("tabs"), menu=document.getElementById("menu");
+const tabs=$("tabs"), menu=$("menu");
 function showCat(cat){
   [...tabs.children].forEach(b=>b.setAttribute("aria-selected", b.dataset.cat===cat));
   menu.innerHTML="";
   SERVIZI[cat].forEach(s=>{
     const el=document.createElement("div"); el.className="item";
-    el.innerHTML='<div><span class="dur">'+s.d+' MIN</span><h3>'+s.n+'</h3></div><div class="price">'+(s.p? "da € "+s.p : "gratis")+'</div><p>'+s.t+'</p><button type="button">Prenota questo servizio →</button>';
-    el.querySelector("button").onclick=()=>{ selectService(s.n); document.getElementById("prenota").scrollIntoView(); };
+    el.innerHTML='<div><span class="dur">'+s.d+' MIN</span><h3>'+esc(s.n)+'</h3></div><div class="price">'+prezzo(s)+'</div>'+(s.t?'<p>'+esc(s.t)+'</p>':'')+'<button type="button">Prenota questo servizio →</button>';
+    el.querySelector("button").onclick=()=>{ selectService(s.n); $("prenota").scrollIntoView(); };
     menu.appendChild(el);
   });
 }
-Object.keys(SERVIZI).forEach((c,i)=>{ const b=document.createElement("button"); b.className="tab"; b.type="button"; b.role="tab"; b.dataset.cat=c; b.textContent=c; b.onclick=()=>showCat(c); tabs.appendChild(b); });
-showCat("Capelli");
+Object.keys(SERVIZI).forEach(c=>{ const b=document.createElement("button"); b.className="tab"; b.type="button"; b.setAttribute("role","tab"); b.dataset.cat=c; b.textContent=c; b.onclick=()=>showCat(c); tabs.appendChild(b); });
+if(Object.keys(SERVIZI).length<2) tabs.classList.add("hidden");
+showCat(Object.keys(SERVIZI)[0]);
 
 /* cartella colori: ciocche disegnate */
 const NUANCE=[["Biondo miele","8.3",["#f3d9a4","#d9ad62","#a87631"]],["Biondo cenere","9.1",["#efe8da","#cbbfa8","#9a8f7b"]],["Rame veneziano","7.4",["#e9a26e","#c26a35","#7d3a18"]],["Castano nocciola","6.3",["#c79a6b","#8d6038","#4f331b"]],["Cioccolato","4.5",["#8b5a44","#5a3326","#2b1712"]],["Nero blu","1.1",["#4b5466","#232833","#0d0f14"]]];
-const swWrap=document.getElementById("swatches");
 const REDUCE_MOTION=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-NUANCE.forEach(([name,code,c])=>{
+if(CONFIG.cartellaColori) NUANCE.forEach(([name,code,c])=>{
+  const swWrap=$("swatches");
   const d=document.createElement("div"); d.className="sw";
   const cv=document.createElement("canvas"); cv.width=200; cv.height=480; cv.setAttribute("aria-hidden","true");
   d.appendChild(cv); d.insertAdjacentHTML("beforeend","<b>"+name+"</b><span>TONO "+code+"</span>");
@@ -606,32 +773,16 @@ NUANCE.forEach(([name,code,c])=>{
   cv.addEventListener("pointerdown",e=>{ last=null; touch(e); });
 });
 
-/* recensioni di esempio (sul sito di un cliente: le sue recensioni Google reali) */
-const RECENSIONI=[
-  {n:"Chiara M.", q:"Finalmente un balayage che sembra naturale anche dopo un mese. Mi hanno spiegato ogni passaggio prima di iniziare.", s:"Balayage", t:"2 settimane fa", c:"#e6cf9f"},
-  {n:"Davide R.", q:"Prenotato alle undici di sera dal telefono, confermato in un minuto. Taglio preciso e veloce.", s:"Taglio uomo", t:"1 mese fa", c:"#c9a5a0"},
-  {n:"Sara L.", q:"Ambiente calmo, nessuna attesa. La consulenza colore gratuita mi ha evitato l'ennesimo errore.", s:"Consulenza colore", t:"1 mese fa", c:"#b9c4c9"},
-  {n:"Elena B.", q:"Semipermanente perfetto per tre settimane piene. Il promemoria via mail il giorno prima è comodissimo.", s:"Manicure", t:"2 mesi fa", c:"#d9c7b0"}
-];
-(function(){
-  const g=document.getElementById("rgrid");
-  RECENSIONI.forEach(r=>{
-    const ini=r.n.split(" ").map(x=>x[0]).join("");
-    g.insertAdjacentHTML("beforeend",'<article class="rcard"><div class="rtop"><span class="ini" style="background:'+r.c+'">'+ini+'</span><div><b>'+r.n+'</b><small>'+r.t+'</small></div></div><div class="st" aria-label="5 stelle">★★★★★</div><p>'+r.q+'</p><div class="svc"><span>'+r.s+'</span><span>Esempio</span></div></article>');
-  });
-})();
-
-
 /* prenotazione */
-const svcSel=document.getElementById("svc");
-Object.entries(SERVIZI).forEach(([cat,list])=>{ const og=document.createElement("optgroup"); og.label=cat; list.forEach(s=>{ const o=document.createElement("option"); o.value=s.n; o.textContent=s.n+" · "+s.d+" min"+(s.p?" · da € "+s.p:""); og.appendChild(o); }); svcSel.appendChild(og); });
-svcSel.value="Taglio e piega";
+const svcSel=$("svc");
+Object.entries(SERVIZI).forEach(([cat,list])=>{ const og=document.createElement("optgroup"); og.label=cat; list.forEach(s=>{ const o=document.createElement("option"); o.value=s.n; o.textContent=s.n+" · "+s.d+" min"+(s.p?" · "+prezzo(s):""); og.appendChild(o); }); svcSel.appendChild(og); });
+svcSel.value=EVIDENZA[0] || ALL[0].n;
 let view=new Date(today.getFullYear(),today.getMonth(),1), selDay=null, selSlot=null;
-function svc(){ return ALL.find(s=>s.n===svcSel.value) || Object.values(SERVIZI).flat().find(s=>s.n===svcSel.value); }
-function selectService(n){ svcSel.value=n; selSlot=null; renderCal(); renderSlots(); }
+function svc(){ return ALL.find(s=>s.n===svcSel.value) || ALL[0]; }
+function selectService(n){ svcSel.value=n; selSlot=null; if(selDay && !hasFree(selDay,svc().d)) selDay=null; renderCal(); renderSlots(); }
 function renderCal(){
-  const cal=document.getElementById("cal"); cal.innerHTML="";
-  document.getElementById("monthLabel").textContent=MESI[view.getMonth()]+" "+view.getFullYear();
+  const cal=$("cal"); cal.innerHTML="";
+  $("monthLabel").textContent=MESI[view.getMonth()]+" "+view.getFullYear();
   ["lun","mar","mer","gio","ven","sab","dom"].forEach(x=>cal.insertAdjacentHTML("beforeend",'<div class="dow">'+x+'</div>'));
   const first=(view.getDay()+6)%7; for(let i=0;i<first;i++) cal.insertAdjacentHTML("beforeend","<div></div>");
   const days=new Date(view.getFullYear(),view.getMonth()+1,0).getDate();
@@ -645,11 +796,12 @@ function renderCal(){
     b.onclick=()=>{ selDay=dt; selSlot=null; renderCal(); renderSlots(); };
     cal.appendChild(b);
   }
-  document.getElementById("prevM").disabled = view <= new Date(today.getFullYear(),today.getMonth(),1);
+  $("prevM").disabled = view <= new Date(today.getFullYear(),today.getMonth(),1);
 }
 function renderSlots(){
-  const box=document.getElementById("slots"); box.innerHTML="";
+  const box=$("slots"); box.innerHTML="";
   if(!selDay){ const n=nextFree(svc().d,1)[0]; if(n){ selDay=n.date; view=new Date(n.date.getFullYear(),n.date.getMonth(),1); renderCal(); } }
+  if(!selDay){ $("summary").textContent="Nessun posto libero nelle prossime settimane per questo servizio."; return; }
   slotsFor(selDay,svc().d).forEach(s=>{
     const b=document.createElement("button"); b.type="button"; b.className="slot"; b.textContent=s.label; b.disabled=!s.free;
     if(selSlot===s.label) b.classList.add("sel");
@@ -657,35 +809,35 @@ function renderSlots(){
     box.appendChild(b);
   });
   const s=svc();
-  document.getElementById("summary").innerHTML='<span><b>'+s.n+'</b> · '+s.d+' minuti'+(s.p?' · da € '+s.p:'')+'</span><span>'+GIORNI[selDay.getDay()]+' '+selDay.getDate()+' '+MESI[selDay.getMonth()]+(selSlot?' alle <b>'+selSlot+'</b>':' · scegli un orario')+'</span>';
+  $("summary").innerHTML='<span><b>'+esc(s.n)+'</b> · '+s.d+' minuti'+(s.p?' · '+prezzo(s):'')+'</span><span>'+GIORNI[selDay.getDay()]+' '+selDay.getDate()+' '+MESI[selDay.getMonth()]+(selSlot?' alle <b>'+selSlot+'</b>':' · scegli un orario')+'</span>';
 }
-document.getElementById("prevM").onclick=()=>{ view=new Date(view.getFullYear(),view.getMonth()-1,1); renderCal(); };
-document.getElementById("nextM").onclick=()=>{ view=new Date(view.getFullYear(),view.getMonth()+1,1); renderCal(); };
+$("prevM").onclick=()=>{ view=new Date(view.getFullYear(),view.getMonth()-1,1); renderCal(); };
+$("nextM").onclick=()=>{ view=new Date(view.getFullYear(),view.getMonth()+1,1); renderCal(); };
 svcSel.onchange=()=>{ selSlot=null; if(selDay && !hasFree(selDay,svc().d)) selDay=null; renderCal(); renderSlots(); };
 function showConfirm(name, email){
   const s=svc(); const when=GIORNI[selDay.getDay()]+" "+selDay.getDate()+" "+MESI[selDay.getMonth()]+" alle "+selSlot;
-  document.getElementById("bookForm").style.display="none";
-  document.getElementById("confirm").classList.add("on");
-  document.getElementById("confirmText").textContent=name+", ti aspettiamo "+when+" per "+s.n.toLowerCase()+".";
-  document.getElementById("mailBody").innerHTML="<b>Prenotazione confermata ✓</b><span>"+s.n+" · "+when+"</span><span>Maison Ardesia · Porta Venezia, Milano</span><span style='color:var(--muted)'>Ti manderemo un promemoria il giorno prima. Per spostare l'appuntamento rispondi a questa mail o scrivi ad Aria sul sito.</span>"+(email?"<span style='color:var(--muted)'>Inviata a: "+email+"</span>":"");
+  $("bookForm").style.display="none";
+  $("confirm").classList.add("on");
+  $("confirmText").textContent=name+", ti aspettiamo "+when+" per "+s.n.toLowerCase()+".";
+  $("mailBody").innerHTML="<b>Prenotazione confermata ✓</b><span>"+esc(s.n)+" · "+when+"</span><span>"+esc(CONFIG.nome)+" · "+esc(CONFIG.indirizzo.replace(/\.$/,""))+"</span><span style='color:var(--muted)'>Ti manderemo un promemoria il giorno prima. Per spostare l'appuntamento rispondi a questa mail o scrivi a "+esc(A.nome)+" sul sito.</span>"+(email?"<span style='color:var(--muted)'>Inviata a: "+esc(email)+"</span>":"");
 }
-document.getElementById("confirmBtn").onclick=()=>{
-  const nm=document.getElementById("nm").value.trim(), ph=document.getElementById("ph").value.trim(), em=document.getElementById("em").value.trim();
-  const err=document.getElementById("err");
+$("confirmBtn").onclick=()=>{
+  const nm=$("nm").value.trim(), ph=$("ph").value.trim(), em=$("em").value.trim();
+  const err=$("err");
   if(!selSlot){ err.textContent="Scegli un orario tra quelli liberi."; return; }
   if(!nm){ err.textContent="Inserisci il tuo nome."; return; }
   if(ph.replace(/\D/g,"").length<8){ err.textContent="Controlla il numero di telefono: servono almeno 8 cifre."; return; }
   err.textContent=""; showConfirm(nm, em);
 };
-document.getElementById("againBtn").onclick=()=>{ document.getElementById("confirm").classList.remove("on"); document.getElementById("bookForm").style.display=""; selSlot=null; renderSlots(); };
+$("againBtn").onclick=()=>{ $("confirm").classList.remove("on"); $("bookForm").style.display=""; selSlot=null; renderSlots(); };
 renderCal(); renderSlots();
 
-/* ===== assistente Aria ===== */
-const chat=document.getElementById("chat"), log=document.getElementById("log"), chips=document.getElementById("chips");
+/* ===== assistente ===== */
+const chat=$("chat"), log=$("log"), chips=$("chips");
 let started=false, flow=null, bk={};
-function openChat(){ chat.classList.remove("closed"); document.getElementById("hint").style.display="none"; if(!started){ started=true; welcome(); } setTimeout(()=>document.getElementById("say").focus(),250); }
+function openChat(){ chat.classList.remove("closed"); $("hint").style.display="none"; if(!started){ started=true; welcome(); } setTimeout(()=>$("say").focus(),250); }
 document.querySelectorAll("[data-open-chat]").forEach(b=>b.addEventListener("click",openChat));
-document.getElementById("closeChat").onclick=()=>chat.classList.add("closed");
+$("closeChat").onclick=()=>chat.classList.add("closed");
 function add(text, who, cls){ const m=document.createElement("div"); m.className="msg "+who+(cls?" "+cls:""); m.innerHTML=text; log.appendChild(m); log.scrollTop=log.scrollHeight; return m; }
 function bot(text, opts, cls){
   setChips([]);
@@ -694,50 +846,60 @@ function bot(text, opts, cls){
 }
 function setChips(list){ chips.innerHTML=""; list.forEach(o=>{ const b=document.createElement("button"); b.type="button"; b.className="chip"; b.textContent=o; b.onclick=()=>user(o); chips.appendChild(b); }); }
 const MAIN=["Prenota un appuntamento","Prezzi","Orari","Dove siete"];
-async function welcome(){ await bot("Ciao, sono Aria 👋 Ti aiuto a prenotare o a trovare informazioni su Maison Ardesia. Cosa ti serve?", MAIN); }
-function user(text){ add(text.replace(/</g,"&lt;"),"me"); route(text); }
-document.getElementById("compose").addEventListener("submit",e=>{ e.preventDefault(); const i=document.getElementById("say"); const v=i.value.trim(); if(!v) return; i.value=""; user(v); });
+async function welcome(){ await bot("Ciao, sono "+esc(A.nome)+" 👋 Ti aiuto a prenotare o a trovare informazioni su "+esc(CONFIG.nome)+". Cosa ti serve?", MAIN); }
+function user(text){ add(esc(text),"me"); route(text); }
+$("compose").addEventListener("submit",e=>{ e.preventDefault(); const i=$("say"); const v=i.value.trim(); if(!v) return; i.value=""; user(v); });
 function norm(t){ return t.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,""); }
-function findService(t){ const n=norm(t); let best=null; Object.values(SERVIZI).flat().forEach(s=>{ const words=norm(s.n).split(" ").filter(w=>w.length>3); if(norm(s.n)===n || words.some(w=>n.includes(w))) best=best||s; }); if(!best){ if(n.includes("capell")) best=SERVIZI.Capelli[1]; if(n.includes("unghi")||n.includes("mani")) best=SERVIZI.Estetica[0]; if(n.includes("biond")||n.includes("schiar")) best=SERVIZI.Colore[1]; } return best; }
+function findService(t){
+  const n=norm(t); let best=null;
+  ALL.forEach(s=>{ if(norm(s.n)===n) best=s; });
+  if(!best) ALL.forEach(s=>{ const words=norm(s.n).split(" ").filter(w=>w.length>3); if(words.length && words.every(w=>n.includes(w))) best=best||s; });
+  if(!best) ALL.forEach(s=>{ const words=norm(s.n).split(" ").filter(w=>w.length>3); if(words.some(w=>n.includes(w))) best=best||s; });
+  if(!best && A.sinonimi){ for(const [k,v] of Object.entries(A.sinonimi)){ if(n.includes(norm(k))){ best=ALL.find(s=>s.n===v)||null; if(best) break; } } }
+  return best;
+}
+function orariChat(){
+  const gruppi=[]; [1,2,3,4,5,6,0].forEach(i=>{ const txt=orariTesto(i); const g=gruppi[gruppi.length-1]; if(g && g.txt===txt) g.giorni.push(i); else gruppi.push({txt, giorni:[i]}); });
+  return gruppi.map(g=>{ const nomi=g.giorni.length>2 ? GIORNI[g.giorni[0]]+"–"+GIORNI[g.giorni[g.giorni.length-1]] : g.giorni.map(i=>GIORNI[i]).join(" e "); return nomi[0].toUpperCase()+nomi.slice(1)+": "+g.txt.replace(/ – /g,"–"); }).join("<br>");
+}
 async function route(t){
   const n=norm(t);
-  if(flow==="svc"){ const s=findService(t); if(s){ bk.s=s; return askDay(); } return bot("Non ho trovato quel servizio. Scegline uno qui sotto:", ["Taglio e piega","Piega","Colore radici","Balayage","Manicure con semipermanente"]); }
+  if(flow==="svc"){ const s=findService(t); if(s){ bk.s=s; return askDay(); } return bot("Non ho trovato quel servizio. Scegline uno qui sotto:", EVIDENZA); }
   if(flow==="day"){ const pick=bk.opts.find(o=>norm(o.lab)===n || n.includes(norm(o.lab).split(" ")[0])); if(pick){ bk.d=pick; return askTime(); } return bot("Scegli uno dei giorni proposti:", bk.opts.map(o=>o.lab)); }
   if(flow==="time"){ const q=n.replace(".",":").trim(); const s=bk.d.all.find(x=>x.label===q)||bk.d.all.find(x=>q.includes(x.label)); if(s){ bk.t=s.label; flow="name"; return bot("Perfetto, <b>"+dayName(bk.d.date).toLowerCase()+" alle "+s.label+"</b>. A che nome prenoto?"); } return bot("Scegli uno degli orari liberi:", bk.d.all.slice(0,6).map(x=>x.label)); }
-  if(flow==="name"){ bk.n=t.trim().split(/\s+/).map(w=>w[0].toUpperCase()+w.slice(1)).join(" "); flow="phone"; return bot("Grazie "+bk.n.split(" ")[0]+"! Mi lasci un numero di telefono? Serve solo per avvisarti in caso di imprevisti."); }
-  if(flow==="phone"){ if(t.replace(/\D/g,"").length<8) return bot("Mi sembra incompleto: servono almeno 8 cifre."); flow=null; await bot("Ecco il riepilogo:<br><b>"+bk.s.n+"</b> · "+bk.s.d+" min<br>"+GIORNI[bk.d.date.getDay()]+" "+bk.d.date.getDate()+" "+MESI[bk.d.date.getMonth()]+", ore "+bk.t+"<br>A nome di "+bk.n, ["Confermo","Cambia orario"], "card"); flow="ok"; return; }
-  if(flow==="ok"){ if(n.includes("confermo")){ flow=null; await bot("Fatto ✓ Appuntamento salvato nel calendario del salone. Ti arriverà la conferma e un promemoria il giorno prima. A presto!", ["Prezzi","Dove siete"]); return; } if(n.includes("cambia")) return askDay(); }
-  if(/prenot|appunt|liber|posto|disponib/.test(n)){ const s=findService(t); if(s){ bk={s}; return askDay(); } flow="svc"; bk={}; return bot("Volentieri! Che servizio vuoi prenotare?", ["Taglio e piega","Piega","Colore radici","Balayage","Manicure con semipermanente"]); }
-  if(/prezz|cost|quanto|listino/.test(n)){ const s=findService(t); if(s) return bot("<b>"+s.n+"</b>: "+(s.p?"da € "+s.p:"gratis")+", circa "+s.d+" minuti. "+s.t, ["Prenota "+s.n.toLowerCase(),"Altri prezzi"]); return bot("Alcuni prezzi di partenza:<br>Piega da € 28 · Taglio e piega da € 48<br>Colore radici da € 55 · Balayage da € 140<br>Manicure semipermanente da € 35<br>Il listino completo è nella sezione Servizi.", ["Prenota un appuntamento","Orari"]); }
-  if(/orar|apert|chius|quando/.test(n)) return bot("Siamo aperti da martedì a sabato. Martedì, mercoledì e venerdì 9:30–19:30, giovedì 10–21, sabato 9–18. Domenica e lunedì chiuso.", ["Prenota un appuntamento","Dove siete"]);
-  if(/dove|indiriz|metro|parchegg/.test(n)) return bot("Siamo in zona Porta Venezia, a 4 minuti a piedi dalla metro M1. In zona ci sono strisce blu e un parcheggio coperto a 300 metri.", ["Prenota un appuntamento","Orari"]);
-  if(/annull|sposta|disdic/.test(n)) return bot("Puoi spostare o annullare gratis fino a 24 ore prima: rispondi alla mail di conferma oppure scrivimi qui data e ora del tuo appuntamento.", MAIN);
-  if(/recension|opinion|parere|bravi/.test(n)) return bot("Le clienti ci danno in media 4,9 stelle su 312 recensioni (dati di esempio). Le trovi nella sezione Recensioni del sito.", ["Prenota un appuntamento","Prezzi"]);
+  if(flow==="name"){ bk.n=t.trim().split(/\s+/).map(w=>w[0].toUpperCase()+w.slice(1)).join(" "); flow="phone"; return bot("Grazie "+esc(bk.n.split(" ")[0])+"! Mi lasci un numero di telefono? Serve solo per avvisarti in caso di imprevisti."); }
+  if(flow==="phone"){ if(t.replace(/\D/g,"").length<8) return bot("Mi sembra incompleto: servono almeno 8 cifre."); flow=null; await bot("Ecco il riepilogo:<br><b>"+esc(bk.s.n)+"</b> · "+bk.s.d+" min<br>"+GIORNI[bk.d.date.getDay()]+" "+bk.d.date.getDate()+" "+MESI[bk.d.date.getMonth()]+", ore "+bk.t+"<br>A nome di "+esc(bk.n), ["Confermo","Cambia orario"], "card"); flow="ok"; return; }
+  if(flow==="ok"){ if(n.includes("confermo")){ flow=null; await bot("Fatto ✓ Appuntamento salvato nel calendario. Ti arriverà la conferma e un promemoria il giorno prima. A presto!", ["Prezzi","Dove siete"]); return; } if(n.includes("cambia")) return askDay(); }
+  if(n.startsWith("prenota ")){ const s=findService(t.slice(8)); if(s){ bk={s}; return askDay(); } }
+  if(/prenot|appunt|liber|posto|disponib/.test(n)){ const s=findService(t); if(s){ bk={s}; return askDay(); } flow="svc"; bk={}; return bot("Volentieri! Che servizio vuoi prenotare?", EVIDENZA); }
+  if(/altri prezzi/.test(n)) return route("prezzi");
+  if(/prezz|cost|quanto|listino/.test(n)){ const s=findService(t); if(s) return bot("<b>"+esc(s.n)+"</b>: "+prezzo(s)+", circa "+s.d+" minuti. "+esc(s.t||""), ["Prenota "+s.n.toLowerCase(),"Altri prezzi"]); return bot("Alcuni prezzi:<br>"+EVIDENZA.map(x=>{ const s=ALL.find(y=>y.n===x); return esc(s.n)+" "+prezzo(s); }).join("<br>")+"<br>Il listino completo è nella sezione Servizi.", ["Prenota un appuntamento","Orari"]); }
+  if(/orar|apert|chius|quando/.test(n)) return bot(orariChat(), ["Prenota un appuntamento","Dove siete"]);
+  if(/dove|indiriz|metro|parchegg|arriv/.test(n)) return bot(esc(CONFIG.indirizzo)+" "+esc(CONFIG.comeArrivare||"")+" "+esc(A.parcheggio||""), ["Prenota un appuntamento","Orari"]);
+  if(/annull|sposta|disdic/.test(n)) return bot(esc(A.annullamento||"Per spostare o annullare rispondi alla mail di conferma."), MAIN);
+  if(/recension|opinion|parere|bravi/.test(n)) return bot(CONFIG.fantasia ? "Le clienti ci danno in media "+virgola(R.voto)+" stelle su "+R.numero+" recensioni (dati di esempio). Le trovi nella sezione Recensioni del sito." : "Su Google abbiamo "+virgola(R.voto)+" stelle su "+R.numero+" recensioni. Le trovi nella sezione Recensioni del sito.", ["Prenota un appuntamento","Prezzi"]);
   if(/ciao|buongiorno|buonasera|salve/.test(n)) return bot("Ciao! Come posso aiutarti?", MAIN);
   if(/grazie/.test(n)) return bot("Figurati! Se ti serve altro sono qui.", MAIN);
-  if(n.startsWith("prenota ")){ const s=findService(t.slice(8)); if(s){ bk={s}; return askDay(); } }
-  if(/altri prezzi/.test(n)) return route("prezzi");
-  return bot("Su questo preferisco farti rispondere dal salone: lascia il tuo numero alla prenotazione e ti richiamiamo. Intanto posso aiutarti con prenotazioni, prezzi, orari e indirizzo.", MAIN);
+  { const s=findService(t); if(s){ bk={s}; return bot("<b>"+esc(s.n)+"</b>: "+prezzo(s)+", circa "+s.d+" minuti. Vuoi prenotarlo?", ["Prenota "+s.n.toLowerCase(),"Altri prezzi"]); } }
+  return bot("Su questo preferisco farti rispondere direttamente da "+T.luogo+": lascia il tuo numero alla prenotazione e ti ricontattiamo. Intanto posso aiutarti con prenotazioni, prezzi, orari e indirizzo.", MAIN);
 }
 async function askDay(){
   flow="day";
   const opts=nextFree(bk.s.d,4).map(x=>({...x, lab:dayName(x.date)}));
   bk.opts=opts;
-  await bot("Per <b>"+bk.s.n.toLowerCase()+"</b> ("+bk.s.d+" min) i primi giorni liberi sono questi. Quale preferisci?", opts.map(o=>o.lab));
+  if(!opts.length){ flow=null; return bot("Per <b>"+esc(bk.s.n.toLowerCase())+"</b> non vedo posti liberi nelle prossime settimane. Prova con un altro servizio.", EVIDENZA); }
+  await bot("Per <b>"+esc(bk.s.n.toLowerCase())+"</b> ("+bk.s.d+" min) i primi giorni liberi sono questi. Quale preferisci?", opts.map(o=>o.lab));
 }
 async function askTime(){ flow="time"; await bot(dayName(bk.d.date)+" ho questi orari liberi:", bk.d.all.slice(0,6).map(x=>x.label)); }
 
-/* suggerimento automatico */
-setTimeout(()=>{ const h=document.getElementById("hint"); if(h) h.style.opacity="1"; }, 1200);
-
 /* ===== grafica: seta in movimento nel hero ===== */
 (function(){
-  const cv=document.getElementById("silk"), g=cv.getContext("2d"); let w,h,t=0; const dpr=Math.min(window.devicePixelRatio||1,2);
-  const reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const cv=$("silk"), g=cv.getContext("2d"); let w,h,t=0; const dpr=Math.min(window.devicePixelRatio||1,2);
+  const reduce=REDUCE_MOTION;
   function size(){ w=cv.clientWidth; h=cv.clientHeight; cv.width=w*dpr; cv.height=h*dpr; g.setTransform(dpr,0,0,dpr,0,0); }
   function draw(){
     g.clearRect(0,0,w,h);
-    const bg=g.createLinearGradient(0,0,w,h); bg.addColorStop(0,"#2c343c"); bg.addColorStop(1,"#1d2328"); g.fillStyle=bg; g.fillRect(0,0,w,h);
+    const bg=g.createLinearGradient(0,0,w,h); bg.addColorStop(0,TEMA.slate); bg.addColorStop(1,TEMA.ink); g.fillStyle=bg; g.fillRect(0,0,w,h);
     for(let i=0;i<46;i++){
       const p=i/46;
       g.beginPath();
@@ -745,10 +907,10 @@ setTimeout(()=>{ const h=document.getElementById("hint"); if(h) h.style.opacity=
         const y=h*(.2+p*.75)+Math.sin(x*.0042+t*.6+i*.17)*48*(1-p*.4)+Math.cos(x*.0019-t*.4+i*.09)*36;
         x===-20?g.moveTo(x,y):g.lineTo(x,y);
       }
-      g.strokeStyle= i%5===0 ? "rgba(184,148,90,.45)" : "rgba(214,206,190,"+(.05+p*.08)+")";
+      g.strokeStyle= i%5===0 ? rgba(TEMA.accento,.45) : "rgba(214,206,190,"+(.05+p*.08)+")";
       g.lineWidth= i%5===0 ? 1.2 : .8; g.stroke();
     }
-    const vg=g.createRadialGradient(w*.85,h*.1,0,w*.85,h*.1,w*.6); vg.addColorStop(0,"rgba(184,148,90,.18)"); vg.addColorStop(1,"rgba(184,148,90,0)"); g.fillStyle=vg; g.fillRect(0,0,w,h);
+    const vg=g.createRadialGradient(w*.85,h*.1,0,w*.85,h*.1,w*.6); vg.addColorStop(0,rgba(TEMA.accento,.18)); vg.addColorStop(1,rgba(TEMA.accento,0)); g.fillStyle=vg; g.fillRect(0,0,w,h);
     if(!reduce){ t+=.012; requestAnimationFrame(draw); }
   }
   size(); window.addEventListener("resize",()=>{ size(); if(reduce) draw(); }); draw();
@@ -756,16 +918,15 @@ setTimeout(()=>{ const h=document.getElementById("hint"); if(h) h.style.opacity=
 
 /* mappa stilizzata */
 (function(){
-  const cv=document.getElementById("mapc"), g=cv.getContext("2d");
+  const cv=$("mapc"), g=cv.getContext("2d");
   function draw(){
     const w=cv.clientWidth,h=cv.clientHeight,d=Math.min(window.devicePixelRatio||1,2); cv.width=w*d; cv.height=h*d; g.setTransform(d,0,0,d,0,0);
-    g.fillStyle="#2c343c"; g.fillRect(0,0,w,h);
+    g.fillStyle=TEMA.slate; g.fillRect(0,0,w,h);
     g.strokeStyle="rgba(242,241,238,.10)"; g.lineWidth=1;
     for(let i=-10;i<30;i++){ g.beginPath(); g.moveTo(i*34,0); g.lineTo(i*34-h*.35,h); g.stroke(); g.beginPath(); g.moveTo(0,i*30); g.lineTo(w,i*30+w*.12); g.stroke(); }
-    g.strokeStyle="rgba(184,148,90,.7)"; g.lineWidth=5; g.beginPath(); g.moveTo(-10,h*.75); g.bezierCurveTo(w*.3,h*.6,w*.55,h*.5,w+10,h*.2); g.stroke();
+    g.strokeStyle=rgba(TEMA.accento,.7); g.lineWidth=5; g.beginPath(); g.moveTo(-10,h*.75); g.bezierCurveTo(w*.3,h*.6,w*.55,h*.5,w+10,h*.2); g.stroke();
     g.fillStyle="rgba(242,241,238,.12)"; g.beginPath(); g.ellipse(w*.22,h*.28,50,32,.3,0,7); g.fill();
-    g.fillStyle="#b8945a"; g.beginPath(); g.arc(w*.54,h*.46,6,0,7); g.fill();
-    g.fillStyle="rgba(242,241,238,.7)"; g.font="600 11px Manrope, sans-serif"; g.fillText("M1",w*.66,h*.36);
+    g.fillStyle=TEMA.accento; g.beginPath(); g.arc(w*.54,h*.46,6,0,7); g.fill();
   }
   draw(); window.addEventListener("resize",draw);
 })();
